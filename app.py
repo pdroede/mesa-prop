@@ -283,7 +283,7 @@ for tab, (name, sc) in zip(tabs_acc, SCENARIOS.items()):
             ))
         if sc["viral"] is not None:
             fig_acc.add_vline(
-                x="Jul", line_color="#fb923c", line_dash="dot", line_width=2,
+                x=6, line_color="#fb923c", line_dash="dot", line_width=2,
                 annotation_text="Video viral",
                 annotation_font=dict(color="#fb923c", size=11),
                 annotation_position="top left",
