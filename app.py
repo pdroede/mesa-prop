@@ -52,13 +52,17 @@ def avg_ticket(dist):
     return sum(d * p for d, p in zip(dist, PRICES))
 
 # Distribuicoes (25k / 50k / 100k / 200k)
-DIST_BASE  = (0.30, 0.35, 0.25, 0.10)   # ticket medio $440
-DIST_100K  = (0.20, 0.25, 0.40, 0.15)   # ticket medio $514
-DIST_200K  = (0.15, 0.20, 0.25, 0.40)   # ticket medio $674
-DIST_VIRAL = (0.45, 0.35, 0.15, 0.05)   # ticket medio $368 — viral traz mais iniciantes
+DIST_BASE     = (0.30, 0.35, 0.25, 0.10)  # ticket $440
+DIST_100K     = (0.20, 0.25, 0.40, 0.15)  # ticket $514
+DIST_200K     = (0.15, 0.20, 0.25, 0.40)  # ticket $674
+DIST_VIRAL    = (0.45, 0.35, 0.15, 0.05)  # ticket $368 — viral traz mais iniciantes
+DIST_ALTO_VOL = (0.50, 0.30, 0.15, 0.05)  # ticket $364 — volume alto, ticket baixo
+DIST_FAMOSO   = (0.25, 0.35, 0.28, 0.12)  # ticket $464 — traders mais experientes
 
-CH_BASE  = [15, 18, 22, 27, 33, 41,  50,  61,  74,  90, 110, 134]
-CH_VIRAL = [15, 18, 22, 27, 33, 41, 250,  70,  85, 104, 127, 155]
+CH_BASE     = [15,  18,  22,  27,  33,  41,  50,  61,  74,  90, 110, 134]
+CH_VIRAL    = [15,  18,  22,  27,  33,  41, 250,  70,  85, 104, 127, 155]
+CH_ALTO_VOL = [40,  49,  60,  73,  89, 109, 133, 162, 198, 241, 294, 359]
+CH_FAMOSO   = [200, 220, 242, 266, 293, 322, 354, 390, 429, 472, 519, 571]
 
 SCENARIO_DEFS = {
     "Padrao": {
@@ -88,6 +92,20 @@ SCENARIO_DEFS = {
         "color": "#fb923c",
         "fill":  "rgba(251,146,60,.12)",
         "viral": 6,
+    },
+    "Alto Volume / Baixo Ticket": {
+        "ch":    CH_ALTO_VOL,
+        "dist":  [DIST_ALTO_VOL] * 12,
+        "color": "#f472b6",
+        "fill":  "rgba(244,114,182,.12)",
+        "viral": None,
+    },
+    "Marca Estabelecida": {
+        "ch":    CH_FAMOSO,
+        "dist":  [DIST_FAMOSO] * 12,
+        "color": "#2dd4bf",
+        "fill":  "rgba(45,212,191,.12)",
+        "viral": None,
     },
 }
 
@@ -150,21 +168,23 @@ st.markdown('<hr class="divider">', unsafe_allow_html=True)
 dp = SCENARIOS["Padrao"]["df"]
 d2 = SCENARIOS["Dominio 200k"]["df"]
 dv = SCENARIOS["Video Viral (M7)"]["df"]
+da = SCENARIOS["Alto Volume / Baixo Ticket"]["df"]
+df_fam = SCENARIOS["Marca Estabelecida"]["df"]
 
 kpi_cols = st.columns(5)
 kpis = [
     ("Receita — Padrao",
      f"${dp['receita'].sum():,.0f}",
-     "Distribuicao base, Ano 1"),
-    ("Receita — Dominio 200k",
-     f"${d2['receita'].sum():,.0f}",
-     f"+{(d2['receita'].sum()/dp['receita'].sum()-1)*100:.0f}% vs padrao"),
+     "Referencia base, Ano 1"),
+    ("Receita — Alto Volume",
+     f"${da['receita'].sum():,.0f}",
+     f"359 desafios/mes no M12"),
     ("Receita — Video Viral",
      f"${dv['receita'].sum():,.0f}",
      "Spike de 250 vendas no mes 7"),
-    ("Ticket: Padrao vs 200k",
-     "$440 → $674",
-     "Impacto do mix de contas"),
+    ("Receita — Marca Estabelecida",
+     f"${df_fam['receita'].sum():,.0f}",
+     f"571 desafios/mes no M12"),
     ("Break-even",
      "2–3 desafios/mes",
      "Depende do mix de contas"),
